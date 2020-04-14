@@ -33,19 +33,25 @@ class Profile(db.Model):
     profileImgUrl = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(20), nullable=False)
     gender = db.Column(db.String(10), nullable=False)
+    email = db.Column(db.String(60), nullable=False)
+    hotScore = db.Column(db.String(3), nullable=False)
+    notScore = db.Column(db.String(3), nullable=False)
 
-    def __init__(self, name, description, profileImgUrl, password, gender):
+    def __init__(self, name, description, profileImgUrl, password, gender, email, hotScore, notScore):
         self.name = name
         self.description = description
         self.profileImgUrl = profileImgUrl
         self.password = password
         self.gender = gender
+        self.email = email
+        self.hotScore = hotScore
+        self.notScore = notScore
 
 
 class ProfileSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'description',
-                  'profileImgUrl', 'password', 'gender')
+                  'profileImgUrl', 'password', 'gender', 'email', 'hotScore', 'notScore')
 
 
 profile_schema = ProfileSchema()
@@ -79,8 +85,12 @@ def add_profile():
     profileImgUrl = request.json['profileImgUrl']
     password = request.json['password']
     gender = request.json['gender']
+    email = request.json['email']
+    hotScore = request.json['hotScore']
+    notScore = request.json['notScore']
 
-    new_profile = Profile(name, description, profileImgUrl, password, gender)
+    new_profile = Profile(name, description, profileImgUrl,
+                          password, gender, email, hotScore, notScore)
 
     db.session.add(new_profile)
     db.session.commit()
@@ -98,12 +108,18 @@ def update_todo(id):
     new_profileImgUrl = request.json['profileImgUrl']
     new_password = request.json['password']
     new_gender = request.json['gender']
+    new_email = request.json['email']
+    new_hotScore = request.json['hotScore']
+    new_notScore = request.json['notScore']
 
     profile.name = new_name
     profile.description = new_description
     profile.profileImgUrl = new_profileImgUrl
     profile.password = new_password
     profile.gender = new_gender
+    profile.email = new_email
+    profile.hotScore = new_hotScore
+    profile.notScore = new_notScore
 
     db.session.commit()
     return profile_schema.jsonify(profile)
